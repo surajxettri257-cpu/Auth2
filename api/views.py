@@ -1,0 +1,45 @@
+from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from  .serializers import UserSerializer
+from django.contrib.auth import authenticate, login
+
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+        # return Response({
+        #     "message":"You are an Authorized User.",
+        #     "userId":request.user.id,
+        #     "username":request.user.username,
+        #     "email":request.user.email
+        # })
+
+
+class LoginView(APIView):
+
+    def post(self, request):
+        user = authenticate(
+            request,
+            username = request.data.get("username"),
+            password = request.data.get("password")
+
+        )
+        if user :
+            login(request, user)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            "message":"you are logged out successfully"
+        })
