@@ -36,8 +36,12 @@ urlpatterns = [
 
     path('api/', include('api.urls')),
 
-    path('api-auth/', include('rest_framework.urls'))
+    path('api-auth/', include('rest_framework.urls')),
    # api-auth/login/
    #appi-auth/logout/
+
+   path('api/std/', include('student.urls')),
+
+
 
 ]

@@ -41,12 +41,17 @@ INSTALLED_APPS = [
     # Third party libraries
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'django_filters',
+    'storages',
 
 # local apps
     'api',
+    'student',
+    'core',
 ]
 
 MIDDLEWARE = [
+    'core.middleware.RequestIDMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +61,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+REQUEST_ID_HEADER = 'X-Request-ID'
+
+#settings.py
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"request_id": {"()": "core.logging.RequestIDFilter"}},
+    "formatters": {"json": {"()": "core.logging.JSONFormatter"}},
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "json", "filters": ["request_id"]},
+    },
+    "root": {"handlers": ["console"], "level": "INFO"},
+}
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -138,6 +156,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'django_filters.rest_framework.DjangoFilterBackend',
     ],
 
     'DEFAULT_PERMISSION_CLASSES': [
