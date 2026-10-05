@@ -50,6 +50,36 @@ INSTALLED_APPS = [
     'core',
 ]
 
+
+import environ
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(BASE_DIR / '.env')
+# --- R2 / S3-compatible config ---
+AWS_ACCESS_KEY_ID = env("R2_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = env("R2_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = env("R2_BUCKET_NAME")
+AWS_S3_ENDPOINT_URL =env("R2_ENDPOINT_URL")  # e.g. "https://<account_id>.r2.cloudflarestorage.com"
+
+AWS_S3_REGION_NAME = "auto"          # R2 doesn't use AWS regions, "auto" works
+AWS_S3_SIGNATURE_VERSION = "s3v4"
+AWS_S3_ADDRESSING_STYLE = "virtual"  # or "path" — virtual is R2's recommended style
+AWS_S3_FILE_OVERWRITE = False        # don't silently overwrite same-named files
+AWS_DEFAULT_ACL = None               # R2 ignores ACLs; leave unset
+
+# If you have a public bucket/custom domain, set this so file.url returns the right link
+AWS_S3_CUSTOM_DOMAIN = env("R2_PUBLIC_DOMAIN", default=None)  # e.g. "cdn.myapp.com"
+
+# Django 4.2+ STORAGES API (preferred over old STATICFILES/DEFAULT_FILE_STORAGE)
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
 MIDDLEWARE = [
     'core.middleware.RequestIDMiddleware',
     'django.middleware.security.SecurityMiddleware',

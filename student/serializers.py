@@ -5,4 +5,4 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
-        read_only_fields = ('id',)
+        # read_only_fields = ('id',)
