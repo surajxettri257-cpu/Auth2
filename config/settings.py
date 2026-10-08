@@ -43,13 +43,13 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'django_filters',
     'storages',
+    'drf_spectacular',
 
 # local apps
     'api',
     'student',
     'core',
 ]
-
 
 import environ
 env = environ.Env(DEBUG=(bool, False))
@@ -186,12 +186,21 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'django_filters.rest_framework.DjangoFilterBackend',
     ],
 
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',
     ],
+
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETINGS={
+    "Title":"My API",
+    "Description":"API documentation for my project",
+    "Version":"1.0.0",
+    "SERVE_INCLUDE_SCHEMA":False,
 }
 
 from datetime import timedelta
